@@ -9,4 +9,10 @@ terraform {
       version = "0.13.1"
     }
   }
+  backend "azurerm" {
+    resource_group_name  = "my-rg"
+    storage_account_name = "mystoracc"
+    container_name       = "tfstate"
+    key                  = "prod/terraform.tfstate"
+  }
 }
