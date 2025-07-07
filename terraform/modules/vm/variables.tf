@@ -30,4 +30,7 @@ variable "vm_size" {
 variable "sub_id" {
   
 }
+variable "pub_ip_name" {
+  
+}
 

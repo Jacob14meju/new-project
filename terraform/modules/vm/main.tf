@@ -1,3 +1,10 @@
+resource "azurerm_public_ip" "main_pub_ip" {
+  resource_group_name = var.vm_rg
+  location = var.vm_location
+  name = var.pub_ip_name
+  allocation_method = "Dynamic"
+}
+
 resource "azurerm_network_interface" "main_nic" {
   name = var.nic_name
   resource_group_name = var.vm_rg
@@ -29,3 +36,19 @@ resource "azurerm_linux_virtual_machine" "vm1" {
     version   = "latest"
   }
 }
+
+resource "time_sleep" "waiting_for_pub_ip" {
+  create_duration = "30s"
+}
+resource "null_resource" "pubip" {
+  depends_on = [azurerm_public_ip.main_pub_ip,  time_sleep.waiting_for_pub_ip]
+  provisioner "local-exec" {
+    command = <<EOT
+    if [ -z "${azurerm_public_ip.main_oub_ip.ip_address}]; then
+      echo "error: coudn't find any pub ip" >&2
+      exit 1
+    fi
+  EOT
+  }
+}
+

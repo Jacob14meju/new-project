@@ -29,24 +29,14 @@ resource "azurerm_subnet" "main_sub" {
 }
 
 
-
-module "pub_ip" {
-  source = "./modules/pub_ip"
-  rg_name = azurerm_resource_group.main_rg.name
-  pub_ip_name = "main_pub_ip"
-  loc = azurerm_resource_group.main_rg.location
-}
-
 module "vm1" {
   source = "./modules/vm"
   vm_name = "vm1"
   sub_id = azurerm_subnet.main_sub.id
   nic_name = "main_nic"
+  pub_ip_name = "main_pub_ip"
 }
 
-resource "time_sleep" "wait_for_pub_ip" {
-  create_duration = "30s"
-}
 
 
 
